@@ -1,0 +1,19 @@
+name: build and run
+on:
+  - push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 20
+      uses: actions/setup-java@v3
+      with:
+        java-version: '20'
+        distribution: 'temurin'
+    - name: prepare build
+      run: mkdir build
+    - name: build
+      run: javac --source 20 --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn -d build src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/test/*.java
+    - name: run
+      run: java --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
