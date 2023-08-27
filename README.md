@@ -32,7 +32,7 @@ Text: bye - Thread[#1,main,5,main]
 
 It can be seen that the main thread switches between the enhanced for loop and the method with the `yield return` code.
 
-It is necessary to supply the JVM arguments `--enable-preview --add-exports java.base/jdk.internal.vm=JVMYieldReturn` both for compiling and running the application.
+It is necessary to supply the JVM arguments `--enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn` both for compiling and running the application.
 
 ## How it works
 
@@ -48,6 +48,36 @@ This project allows to create an `Iterable` which runs some (user-provided) code
 When that code calls the `doYield` method, the method is suspended and `Iterator#next` returns the value passed to `doYield`.
 The method is resumed when `Iterator#next` is called again.
 The `yield`ing parts of the method will always run in the same thread that also calls `Iterator#next`.
+
+## Setup and Requirements
+
+### Requirements
+This project requires a Hotspot JDK version 20 (other Java versions do _not_ work).
+
+### JVM configuration
+
+It is necessary to supply the arguments `--enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn` both for compiling and running the application.
+
+Since `Continuation` is an internal JDK class, it is normally not available.
+It can be made available to this project using the command-line argument `--add-exports java.base/jdk.internal.vm=YieldReturn` which allows this project (module `YieldReturn`) to access classes of the package `jdk.internal.vm` of the `java.base` module.
+
+The argument `--enable-preview` is necessary since `Continuation`s are only available as a preview feature (as of Java 20).
+
+#### Eclipse
+
+In Eclipse, the export can be added from the `Libraries` tab of the Build path (Right click on the project > `Build Path` > `Configure Build Path` > `Libraries`).
+After expanding the `JRE System Library` (this should point to a Java 20 JDK), there should be a `Is modular` option.
+This option needs to be edited via double-clicking or the `Edit`-button on the right.  
+![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/042bdd53-2a5c-42a1-8f1a-41659c3ac9c8)
+
+In the `Details` tab, a new export needs to be added via the `Add` button on the right.  
+![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/bb7f997c-3dcd-4f2e-8742-7155530bbe4f)
+
+Enter `java.base` for the `Source Module` and `jdk.internal.vm` for the `Package` entry.  
+![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/6893b91d-d9db-40f7-bfed-495c74dcfaa4)
+
+`--enable-preview` can be added to the VM arguments of the run configuration.  
+![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/1ac7bb62-6fd4-487d-9c4d-b55a09580d13)
 
 ## Disclaimers
 
