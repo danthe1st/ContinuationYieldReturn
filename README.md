@@ -14,7 +14,7 @@ public static void main(String[] args) {
 	}
 }
 
-private static String someMethod(Yielder<String> y) {
+private static void someMethod(Yielder<String> y) {
 	y.yield("Hello - " + Thread.currentThread());
 	System.out.println("between yields");
 	y.yield("World - " + Thread.currentThread());
@@ -23,13 +23,13 @@ private static String someMethod(Yielder<String> y) {
 		y.yield("nested: " + s);
 	}
 
-	return "bye - " + Thread.currentThread();
+	y.yield("bye - " + Thread.currentThread());
 }
 
-private static String otherMethod(Yielder<String> y) {
+private static void otherMethod(Yielder<String> y) {
 	y.yield("it can");
 	y.yield("also be");
-	return "nested";
+	y.yield("nested");
 }
 ```
 
