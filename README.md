@@ -28,9 +28,9 @@ private static String someMethod(Yielder<String> y) {
 	return "bye - " + Thread.currentThread();
 }
 
-private static String otherMethod(Yielder<String> i) {
-	i.yield("it can");
-	i.yield("also be");
+private static String otherMethod(Yielder<String> y) {
+	y.yield("it can");
+	y.yield("also be");
 	return "nested";
 }
 ```
