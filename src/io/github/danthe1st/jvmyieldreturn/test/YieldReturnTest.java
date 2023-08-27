@@ -8,9 +8,9 @@ public class YieldReturnTest {
 		Iterable<String> it = new YieldingSupplier<>() {
 			@Override
 			public String get() {
-				doYield("Hello - " + Thread.currentThread());
+				yieldReturn("Hello - " + Thread.currentThread());
 				System.out.println("between yields");
-				doYield("World - " + Thread.currentThread());
+				yieldReturn("World - " + Thread.currentThread());
 				return "bye - " + Thread.currentThread();
 			}
 		};

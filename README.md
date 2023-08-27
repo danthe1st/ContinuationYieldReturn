@@ -9,9 +9,9 @@ For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./sr
 Iterable<String> it = new YieldingSupplier<>() {
 	@Override
 	public String get() {
-		doYield("Hello - " + Thread.currentThread());
+		yieldReturn("Hello - " + Thread.currentThread());
 		System.out.println("between yields");
-		doYield("World - " + Thread.currentThread());
+		yieldReturn("World - " + Thread.currentThread());
 		return "bye - " + Thread.currentThread();
 	}
 };
@@ -47,7 +47,7 @@ If `Continuation#run` is then called again, the said code continues ("Thaw") at 
 
 ### How this project uses `Continuation`s
 This project allows to create an `Iterable` which runs some (user-provided) code when `next()` is called.
-When that code calls the `doYield` method, the method is suspended and `Iterator#next` returns the value passed to `doYield`.
+When that code calls the `yieldReturn` method, the method is suspended and `Iterator#next` returns the value passed to `yieldReturn`.
 The method is resumed when `Iterator#next` is called again.
 The `yield`ing parts of the method will always run in the same thread that also calls `Iterator#next`.
 

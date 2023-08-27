@@ -13,7 +13,7 @@ public abstract class YieldingSupplier<T> implements Supplier<T>, Iterable<T> {
 	private final ScopedValue<ContinuationScope> SCOPE_HOLDER = ScopedValue.newInstance();
 	private final ScopedValue<AtomicReference<T>> REF_HOLDER = ScopedValue.newInstance();
 
-	protected final void doYield(T toYield) {
+	protected final void yieldReturn(T toYield) {
 		REF_HOLDER.get().set(toYield);
 		Continuation.yield(SCOPE_HOLDER.get());
 	}
