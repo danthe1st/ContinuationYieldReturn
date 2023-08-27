@@ -11,6 +11,21 @@ public class YieldReturnTest {
 				yieldReturn("Hello - " + Thread.currentThread());
 				System.out.println("between yields");
 				yieldReturn("World - " + Thread.currentThread());
+
+				Iterable<String> inner = new YieldingSupplier<>() {
+
+					@Override
+					public String get() {
+						yieldReturn("it can");
+						yieldReturn("also be");
+						return "nested";
+					}
+				};
+
+				for (String s : inner) {
+					yieldReturn(s);
+				}
+
 				return "bye - " + Thread.currentThread();
 			}
 		};
