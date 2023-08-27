@@ -1,7 +1,7 @@
 package io.github.danthe1st.jvmyieldreturn;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import jdk.internal.vm.Continuation;
 import jdk.internal.vm.ContinuationScope;
@@ -20,16 +20,14 @@ public class Yielder<T> {
 		Continuation.yield(scope);
 	}
 
-	public static <T> Iterable<T> create(Function<Yielder<T>, T> fun) {
+	public static <T> Iterable<T> create(Consumer<Yielder<T>> fun) {
 		return () -> {
 			ContinuationScope scope = new ContinuationScope("yieldReturn");
 			AtomicReference<T> ref = new AtomicReference<>();
 
 			Yielder<T> yielder = new Yielder<>(scope, ref);
 
-			Continuation con = new Continuation(scope, () -> {
-				ref.set(fun.apply(yielder));
-			});
+			Continuation con = new Continuation(scope, () -> fun.accept(yielder));
 			return new YieldedIterator<>(ref, con);
 		};
 	}

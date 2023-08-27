@@ -11,6 +11,8 @@ class YieldedIterator<T> implements Iterator<T> {
 	private final Continuation continuation;
 	private final AtomicReference<T> ref;
 
+	private IterationElement<T> next;
+
 	YieldedIterator(AtomicReference<T> ref, Continuation continuation) {
 		this.continuation = continuation;
 		this.ref = ref;
@@ -18,15 +20,30 @@ class YieldedIterator<T> implements Iterator<T> {
 
 	@Override
 	public boolean hasNext() {
-		return !continuation.isDone();
+		if (next != null) {
+			return true;
+		}
+		if (continuation.isDone()) {
+			return false;
+		}
+		continuation.run();
+		if (continuation.isDone()) {
+			return false;
+		}
+		next = new IterationElement<>(ref.get());
+		return true;
 	}
 
 	@Override
 	public T next() {
-		if (!hasNext()) {
+		if (next == null) {
 			throw new NoSuchElementException();
 		}
-		continuation.run();
-		return ref.get();
+		T elem = next.element();
+		next = null;
+		return elem;
 	}
+}
+
+record IterationElement<T>(T element) {
 }
