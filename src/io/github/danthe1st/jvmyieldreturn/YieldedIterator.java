@@ -36,7 +36,7 @@ class YieldedIterator<T> implements Iterator<T> {
 
 	@Override
 	public T next() {
-		if (next == null) {
+		if (!hasNext()) {
 			throw new NoSuchElementException();
 		}
 		T elem = next.element();
