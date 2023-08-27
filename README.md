@@ -67,7 +67,7 @@ The `yield`ing parts of the method will always run in the same thread that also 
 ## Setup and Requirements
 
 ### Requirements
-This project requires a Hotspot JDK version 20 (other Java versions do _not_ work).
+This project requires a Hotspot JDK version 20 (other Java versions may not work).
 
 ### JVM configuration
 
