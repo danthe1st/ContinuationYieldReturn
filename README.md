@@ -7,11 +7,9 @@ This project contains a `yield return` feature for Java applications using Proje
 For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./src/io/github/danthe1st/jvmyieldreturn/test/YieldReturnTest.java):
 ```java
 public static void main(String[] args) {
-	Iterable<String> it = Yielder.create(YieldReturnTest::someMethod);
-
 	System.out.println("main thread: " + Thread.currentThread());
 
-	for (String s : it) {
+	for (String s : Yielder.create(YieldReturnTest::someMethod)) {
 		System.out.println("Text: " + s);
 	}
 }
