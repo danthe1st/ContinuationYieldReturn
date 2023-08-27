@@ -4,12 +4,13 @@ This project contains a `yield return` feature for Java applications using Proje
 
 ## Demo
 
-For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](src/io/github/danthe1st/jvmyieldreturn/test/YieldReturnTest.java):
+For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./src/io/github/danthe1st/jvmyieldreturn/test/YieldReturnTest.java):
 ```java
 Iterable<String> it = new YieldingSupplier<>() {
 	@Override
 	public String get() {
 		doYield("Hello - " + Thread.currentThread());
+		System.out.println("between yields");
 		doYield("World - " + Thread.currentThread());
 		return "bye - " + Thread.currentThread();
 	}
@@ -26,6 +27,7 @@ This demo should print
 ```
 main thread: Thread[#1,main,5,main]
 Text: Hello - Thread[#1,main,5,main]
+between yields
 Text: World - Thread[#1,main,5,main]
 Text: bye - Thread[#1,main,5,main]
 ```

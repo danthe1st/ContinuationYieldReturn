@@ -9,6 +9,7 @@ public class YieldReturnTest {
 			@Override
 			public String get() {
 				doYield("Hello - " + Thread.currentThread());
+				System.out.println("between yields");
 				doYield("World - " + Thread.currentThread());
 				return "bye - " + Thread.currentThread();
 			}
