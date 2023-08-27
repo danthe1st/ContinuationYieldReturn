@@ -59,10 +59,10 @@ At this point, execution of that code stops ("Freeze") and the `Continuation#run
 If `Continuation#run` is then called again, the said code continues ("Thaw") at the `Continuation.yield` method call.
 
 ### How this project uses `Continuation`s
-This project allows to create an `Iterable` which runs some (user-provided) `Function<Yielder<T>,T>` when `next()` is called.
+This project allows to create an `Iterable` which runs some (user-provided) `Function<Yielder<T>,T>` when `hasNext()` or `next()` is called and no value that hasn't been consumed by `next()` was computed already.
 When the code inside that `Function` calls the `Yielder#yield` method, the method is suspended and `Iterator#next` returns the value passed to `Yielder#yield`.
-The method is resumed when `Iterator#next` is called again.
-The `yield`ing parts of the method will always run in the same thread that also calls `Iterator#next`.
+The method is resumed when `Iterator#hasNext`/`Iterator#next` is called again after the previous value was consumed by `Iterator#next`.
+The `yield`ing parts of the method will always run in the same thread that also calls `Iterator#hasNext`/`Iterator#next`.
 
 ## Setup and Requirements
 
