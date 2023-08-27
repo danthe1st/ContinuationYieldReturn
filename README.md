@@ -6,20 +6,32 @@ This project contains a `yield return` feature for Java applications using Proje
 
 For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./src/io/github/danthe1st/jvmyieldreturn/test/YieldReturnTest.java):
 ```java
-Iterable<String> it = new YieldingSupplier<>() {
-	@Override
-	public String get() {
-		yieldReturn("Hello - " + Thread.currentThread());
-		System.out.println("between yields");
-		yieldReturn("World - " + Thread.currentThread());
-		return "bye - " + Thread.currentThread();
+public static void main(String[] args) {
+	Iterable<String> it = Yielder.create(YieldReturnTest::someMethod);
+
+	System.out.println("main thread: " + Thread.currentThread());
+
+	for (String s : it) {
+		System.out.println("Text: " + s);
 	}
-};
+}
 
-System.out.println("main thread: " + Thread.currentThread());
+private static String someMethod(Yielder<String> y) {
+	y.yield("Hello - " + Thread.currentThread());
+	System.out.println("between yields");
+	y.yield("World - " + Thread.currentThread());
 
-for (String s : it) {
-	System.out.println("Text: " + s);
+	for (String s : Yielder.create(YieldReturnTest::otherMethod)) {
+		y.yield("nested: " + s);
+	}
+
+	return "bye - " + Thread.currentThread();
+}
+
+private static String otherMethod(Yielder<String> i) {
+	i.yield("it can");
+	i.yield("also be");
+	return "nested";
 }
 ```
 
@@ -29,6 +41,9 @@ main thread: Thread[#1,main,5,main]
 Text: Hello - Thread[#1,main,5,main]
 between yields
 Text: World - Thread[#1,main,5,main]
+Text: nested: it can
+Text: nested: also be
+Text: nested: nested
 Text: bye - Thread[#1,main,5,main]
 ```
 
@@ -46,8 +61,8 @@ At this point, execution of that code stops ("Freeze") and the `Continuation#run
 If `Continuation#run` is then called again, the said code continues ("Thaw") at the `Continuation.yield` method call.
 
 ### How this project uses `Continuation`s
-This project allows to create an `Iterable` which runs some (user-provided) code when `next()` is called.
-When that code calls the `yieldReturn` method, the method is suspended and `Iterator#next` returns the value passed to `yieldReturn`.
+This project allows to create an `Iterable` which runs some (user-provided) `Function<Yielder<T>,T>` when `next()` is called.
+When the code inside that `Function` calls the `Yielder#yield` method, the method is suspended and `Iterator#next` returns the value passed to `Yielder#yield`.
 The method is resumed when `Iterator#next` is called again.
 The `yield`ing parts of the method will always run in the same thread that also calls `Iterator#next`.
 
