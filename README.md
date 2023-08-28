@@ -94,6 +94,12 @@ Enter `java.base` for the `Source Module` and `jdk.internal.vm` for the `Package
 `--enable-preview` can be added to the VM arguments of the run configuration.  
 ![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/1ac7bb62-6fd4-487d-9c4d-b55a09580d13)
 
+### Tests
+
+Some tests are present in the `test` directory. These tests are _not_ executed by GitHub Actions.
+
+Running the tests requires JUnit 5.
+
 ## Disclaimers
 
 See [This JVM Language Summit talk](https://www.youtube.com/watch?v=6nRS6UiN7X0) for details on how `Continuation`s work in Java.
