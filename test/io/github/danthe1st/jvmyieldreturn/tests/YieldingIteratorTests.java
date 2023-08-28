@@ -148,6 +148,6 @@ class YieldingIteratorTests {
 		assertThrows(IntendedException.class, it.iterator()::next);
 	}
 
-	class IntendedException extends RuntimeException {
+	private static class IntendedException extends RuntimeException {
 	}
 }
