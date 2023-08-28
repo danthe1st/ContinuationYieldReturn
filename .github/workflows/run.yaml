@@ -2,7 +2,7 @@ name: build and run
 on:
   - push
 jobs:
-  build:
+  build20:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -17,3 +17,18 @@ jobs:
       run: javac --source 20 --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn -d build src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/test/*.java
     - name: run
       run: java --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
+  build21:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21-ea'
+        distribution: 'temurin'
+    - name: prepare build
+      run: mkdir build
+    - name: build
+      run: javac --add-exports java.base/jdk.internal.vm=YieldReturn -d build src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/test/*.java
+    - name: run
+      run: java --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
