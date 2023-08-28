@@ -94,6 +94,22 @@ Enter `java.base` for the `Source Module` and `jdk.internal.vm` for the `Package
 `--enable-preview` can be added to the VM arguments of the run configuration.  
 ![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/1ac7bb62-6fd4-487d-9c4d-b55a09580d13)
 
+### CLI
+
+The content of the `src` directory can be compiled and run using the `javac`/`java` command as follows:
+
+First, create a directory called `build` in the project root in order to store `.class` files and ensure that you are running Java 20 with Hotspot.
+
+Then, the code can be compiled using
+```bash
+javac --source 20 --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn -d build src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/test/*.java
+```
+
+After the code is compiled to the `build` directory, it can be run with the following command:
+```bash
+java --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
+```
+
 ### Tests
 
 Some tests are present in the `test` directory. These tests are _not_ executed by GitHub Actions.
