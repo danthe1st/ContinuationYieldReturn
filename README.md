@@ -2,6 +2,8 @@
 
 This project contains a `yield return` feature for Java applications using Project Loom's internal `Continuation` class.
 
+A Javadoc is available [on GitHub Pages](https://danthe1st.github.io/ContinuationYieldReturn/)
+
 ## Demo
 
 For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./src/io/github/danthe1st/jvmyieldreturn/test/YieldReturnTest.java):
@@ -112,7 +114,7 @@ java --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn --modu
 
 ### Tests
 
-Some tests are present in the `test` directory. These tests are _not_ executed by GitHub Actions.
+Some tests are present in the `test` directory.
 
 Running the tests requires JUnit 5.
 
