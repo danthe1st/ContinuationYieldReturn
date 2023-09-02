@@ -37,9 +37,9 @@ jobs:
         mvn -f .github/workflow-utils/test-dependencies.pom dependency:copy-dependencies -Dscope=test -DoutputDirectory=test-dependencies
         curl https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o .github/workflow-utils/test-dependencies/launcher.jar
     - name: compile tests
-      run: javac --module-path build/main;.github/workflow-utils/test-dependencies -d build/test test/io/github/danthe1st/jvmyieldreturn/tests/*.java
+      run: javac --module-path build/main:.github/workflow-utils/test-dependencies -d build/test test/io/github/danthe1st/jvmyieldreturn/tests/*.java
     - name: run tests
-      run: java --add-exports java.base/jdk.internal.vm=ALL-UNNAMED -jar .github/workflow-utils/test-dependencies/launcher.jar --disable-ansi-colors --class-path build/main;build/test --select-package io.github.danthe1st.jvmyieldreturn.tests
+      run: java --add-exports java.base/jdk.internal.vm=ALL-UNNAMED -jar .github/workflow-utils/test-dependencies/launcher.jar --disable-ansi-colors --class-path build/main:build/test --select-package io.github.danthe1st.jvmyieldreturn.tests
     - name: generate Javadoc
       run: javadoc -sourcepath src --snippet-path src --add-exports java.base/jdk.internal.vm=YieldReturn -d docs io.github.danthe1st.jvmyieldreturn
     - name: upload Javadoc
