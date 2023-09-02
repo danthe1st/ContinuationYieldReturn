@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -122,7 +123,7 @@ class YieldingIteratorTests {
 
 //	//requires module jdk.incubator.concurrent (in Java 20)
 //	@Test
-//	void testYieldFromThread() {
+//	void testYieldFromStructuredConcurrency() {
 //		Iterable<Class<?>> yielder = Yielder.create(y -> {
 //			try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 //				Future<Object> f = scope.fork(() -> {
@@ -139,6 +140,38 @@ class YieldingIteratorTests {
 //		});
 //		assertEquals(IllegalStateException.class, yielder.iterator().next());
 //	}
+
+	@Test
+	void testYieldFromPlatformThread() {
+		testYieldFromThread(Thread.ofPlatform());
+	}
+
+	@Test
+	void testYieldFromVirtualThread() {
+		testYieldFromThread(Thread.ofVirtual());
+	}
+
+	private void testYieldFromThread(Thread.Builder threadBuilder) {
+		Iterable<Class<?>> yielder = Yielder.create(y -> {
+			var holder = new Object() {
+				Exception e;
+			};
+			try {
+				threadBuilder.start(() -> {
+					try {
+						y.yield(getClass());// should fail with IllegalStateException
+						fail("should have thrown exception");
+					} catch (Exception e) {
+						holder.e = e;
+					}
+				}).join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			y.yield(holder.e.getClass());
+		});
+		assertEquals(IllegalStateException.class, yielder.iterator().next());
+	}
 
 	@Test
 	void testWithException() {
