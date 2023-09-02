@@ -37,6 +37,12 @@ jobs:
   javadoc:
     runs-on: ubuntu-latest
     needs: [build]
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 21
@@ -46,8 +52,11 @@ jobs:
         distribution: 'temurin'
     - name: generate Javadoc
       run: javadoc -sourcepath src --snippet-path src --add-exports java.base/jdk.internal.vm=YieldReturn -d docs io.github.danthe1st.jvmyieldreturn
-    - name: upload Javadoc
-      uses: actions/upload-artifact@v3
+    - name: Upload Javadoc
+      uses: actions/upload-pages-artifact@v2
       with:
-        name: Javadocs
-        path: docs
+        path: 'docs'
+    - name: Deploy Javadoc to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+    
