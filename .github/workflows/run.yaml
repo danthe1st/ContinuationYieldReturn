@@ -34,9 +34,8 @@ jobs:
       run: java --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build/main -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
     - name: download test dependencies
       run: |
-        mkdir test-dependencies
-        curl https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o .github/workflow-utils/test-dependencies/launcher.jar
         mvn -f .github/workflow-utils/test-dependencies.pom dependency:copy-dependencies -Dscope=test -DoutputDirectory=test-dependencies
+        curl https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o .github/workflow-utils/test-dependencies/launcher.jar
     - name: compile tests
       run: javac --module-path build/main;.github/workflow-utils/test-dependencies -d build/test test/io/github/danthe1st/jvmyieldreturn/tests/*.java
     - name: run tests
