@@ -35,7 +35,7 @@ jobs:
     - name: generate Javadoc
       run: javadoc -sourcepath src --snippet-path src --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn --source 20 -d docs io.github.danthe1st.jvmyieldreturn
     - name: upload Javadoc
-      uses: actions/upload-artifact
+      uses: actions/upload-artifact@v3
       with:
         name: Javadocs
         path: docs
