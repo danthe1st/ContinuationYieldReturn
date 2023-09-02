@@ -32,3 +32,10 @@ jobs:
       run: javac --add-exports java.base/jdk.internal.vm=YieldReturn -d build src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/test/*.java
     - name: run
       run: java --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
+    - name: generate Javadoc
+      run: javadoc -sourcepath src --snippet-path src --enable-preview --add-exports java.base/jdk.internal.vm=YieldReturn --source 20 -d docs io.github.danthe1st.jvmyieldreturn
+    - name: upload Javadoc
+      uses: actions/upload-artifact
+      with:
+        name: Javadocs
+        path: docs
