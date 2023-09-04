@@ -10,10 +10,15 @@ For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./sr
 ```java
 public static void main(String[] args) {
 	System.out.println("main thread: " + Thread.currentThread());
-
+	
 	for (String s : Yielder.iterable(YieldReturnTest::someMethod)) {
 		System.out.println("Text: " + s);
 	}
+
+	System.out.println();
+	System.out.println("Now using streams:");
+	
+	Yielder.stream(YieldReturnTest::someMethod).limit(2).forEach(System.out::println);
 }
 
 private static void someMethod(Yielder<String> y) {

@@ -11,6 +11,11 @@ class YieldReturnTest {
 		for (String s : Yielder.iterable(YieldReturnTest::someMethod)) {
 			System.out.println("Text: " + s);
 		}
+
+		System.out.println();
+		System.out.println("Now using streams:");
+		
+		Yielder.stream(YieldReturnTest::someMethod).limit(2).forEach(System.out::println);
 	}
 	
 	private static void someMethod(Yielder<String> y) {
