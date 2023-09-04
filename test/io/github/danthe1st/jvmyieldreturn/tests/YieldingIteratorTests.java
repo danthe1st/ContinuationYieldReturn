@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import io.github.danthe1st.jvmyieldreturn.Yielder;
 
 class YieldingIteratorTests {
-
+	
 	@Test
 	void testEmptyFunctionHasNextBeforeNext() {
 		Iterable<String> yielder = Yielder.iterable(y -> {
@@ -25,7 +25,7 @@ class YieldingIteratorTests {
 		assertFalse(it.hasNext());
 		assertThrows(NoSuchElementException.class, it::next);
 	}
-
+	
 	@Test
 	void testEmptyFunctionMultipleHasNextCalls() {
 		Iterable<String> yielder = Yielder.iterable(y -> {
@@ -34,33 +34,33 @@ class YieldingIteratorTests {
 		assertFalse(it.hasNext());
 		assertFalse(it.hasNext());
 	}
-
+	
 	@Test
 	void testEmptyFunctionNoHasNext() {
 		Iterable<String> yielder = Yielder.iterable(y -> {
 		});
 		assertThrows(NoSuchElementException.class, yielder.iterator()::next);
 	}
-
+	
 	@Test
 	void testFunctionWithSingleYieldHasNextBeforeNext() {
 		Iterable<String> yielder = Yielder.iterable(y -> {
 			y.yield("someValue");
 		});
-
+		
 		Iterator<String> it = yielder.iterator();
 		assertTrue(it.hasNext());
 		assertEquals("someValue", it.next());
 		assertFalse(it.hasNext());
 		assertThrows(NoSuchElementException.class, it::next);
 	}
-
+	
 	@Test
 	void testFunctionWithSingleYieldMultipleHasNextCalls() {
 		Iterable<String> yielder = Yielder.iterable(y -> {
 			y.yield("someValue");
 		});
-
+		
 		Iterator<String> it = yielder.iterator();
 		assertTrue(it.hasNext());
 		assertTrue(it.hasNext());
@@ -69,44 +69,44 @@ class YieldingIteratorTests {
 		assertFalse(it.hasNext());
 		assertThrows(NoSuchElementException.class, it::next);
 	}
-
+	
 	@Test
 	void testFunctionWithSingleYieldNoHasNext() {
 		Iterable<String> yielder = Yielder.iterable(y -> {
 			y.yield("someValue");
 		});
-
+		
 		Iterator<String> it = yielder.iterator();
 		assertEquals("someValue", it.next());
 		assertThrows(NoSuchElementException.class, it::next);
 		assertFalse(it.hasNext());
 	}
-
+	
 	@Test
 	void testFunctionYieldingNullHasNextBeforeNext() {
 		Iterable<Object> yielder = Yielder.iterable(y -> {
 			y.yield(null);
 		});
-
+		
 		Iterator<Object> it = yielder.iterator();
 		assertTrue(it.hasNext());
 		assertNull(it.next());
 		assertFalse(it.hasNext());
 		assertThrows(NoSuchElementException.class, it::next);
 	}
-
+	
 	@Test
 	void testFunctionYieldingNullNoHasNext() {
 		Iterable<Object> yielder = Yielder.iterable(y -> {
 			y.yield(null);
 		});
-
+		
 		Iterator<Object> it = yielder.iterator();
 		assertNull(it.next());
 		assertThrows(NoSuchElementException.class, it::next);
 		assertFalse(it.hasNext());
 	}
-
+	
 	@Test
 	void testYieldFromOutsideFunction() {
 		var holder = new Object() {
@@ -121,8 +121,8 @@ class YieldingIteratorTests {
 		assertThrows(IllegalStateException.class, () -> holder.y.yield("b"));
 		assertFalse(it.hasNext());
 	}
-
-	//	//requires module jdk.incubator.concurrent (in Java 20)
+	
+	// //requires module jdk.incubator.concurrent
 	//	@Test
 	//	void testYieldFromStructuredConcurrency() {
 	//		Iterable<Class<?>> yielder = Yielder.create(y -> {
@@ -141,17 +141,17 @@ class YieldingIteratorTests {
 	//		});
 	//		assertEquals(IllegalStateException.class, yielder.iterator().next());
 	//	}
-
+	
 	@Test
 	void testYieldFromPlatformThread() {
 		testYieldFromThread(Thread.ofPlatform());
 	}
-
+	
 	@Test
 	void testYieldFromVirtualThread() {
 		testYieldFromThread(Thread.ofVirtual());
 	}
-
+	
 	private void testYieldFromThread(Thread.Builder threadBuilder) {
 		Iterable<Class<?>> yielder = Yielder.iterable(y -> {
 			var holder = new Object() {
@@ -173,7 +173,7 @@ class YieldingIteratorTests {
 		});
 		assertEquals(IllegalStateException.class, yielder.iterator().next());
 	}
-
+	
 	@Test
 	void testWithException() {
 		Iterable<Object> it = Yielder.iterable(y -> {
@@ -181,7 +181,7 @@ class YieldingIteratorTests {
 		});
 		assertThrows(IntendedException.class, it.iterator()::next);
 	}
-	
+
 	@Test
 	void testWithStream() {
 		List<Integer> list = Yielder.<Integer>stream(y -> {
@@ -190,7 +190,7 @@ class YieldingIteratorTests {
 		}).toList();
 		assertEquals(List.of(1, 2), list);
 	}
-
+	
 	private static class IntendedException extends RuntimeException {
 	}
 }
