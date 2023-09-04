@@ -11,7 +11,7 @@ For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./sr
 public static void main(String[] args) {
 	System.out.println("main thread: " + Thread.currentThread());
 
-	for (String s : Yielder.create(YieldReturnTest::someMethod)) {
+	for (String s : Yielder.iterable(YieldReturnTest::someMethod)) {
 		System.out.println("Text: " + s);
 	}
 }
@@ -21,7 +21,7 @@ private static void someMethod(Yielder<String> y) {
 	System.out.println("between yields");
 	y.yield("World - " + Thread.currentThread());
 
-	for (String s : Yielder.create(YieldReturnTest::otherMethod)) {
+	for (String s : Yielder.iterable(YieldReturnTest::otherMethod)) {
 		y.yield("nested: " + s);
 	}
 

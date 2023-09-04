@@ -8,7 +8,7 @@ class YieldReturnTest {
 	public static void main(String[] args) {
 		System.out.println("main thread: " + Thread.currentThread());
 		
-		for (String s : Yielder.create(YieldReturnTest::someMethod)) {
+		for (String s : Yielder.iterable(YieldReturnTest::someMethod)) {
 			System.out.println("Text: " + s);
 		}
 	}
@@ -18,7 +18,7 @@ class YieldReturnTest {
 		System.out.println("between yields");
 		y.yield("World - " + Thread.currentThread());
 		
-		for (String s : Yielder.create(YieldReturnTest::otherMethod)) {
+		for (String s : Yielder.iterable(YieldReturnTest::otherMethod)) {
 			y.yield("nested: " + s);
 		}
 		

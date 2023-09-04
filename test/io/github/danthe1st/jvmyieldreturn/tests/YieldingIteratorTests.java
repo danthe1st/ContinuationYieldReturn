@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class YieldingIteratorTests {
 
 	@Test
 	void testEmptyFunctionHasNextBeforeNext() {
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 		});
 		Iterator<String> it = yielder.iterator();
 		assertFalse(it.hasNext());
@@ -27,7 +28,7 @@ class YieldingIteratorTests {
 
 	@Test
 	void testEmptyFunctionMultipleHasNextCalls() {
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 		});
 		Iterator<String> it = yielder.iterator();
 		assertFalse(it.hasNext());
@@ -36,14 +37,14 @@ class YieldingIteratorTests {
 
 	@Test
 	void testEmptyFunctionNoHasNext() {
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 		});
 		assertThrows(NoSuchElementException.class, yielder.iterator()::next);
 	}
 
 	@Test
 	void testFunctionWithSingleYieldHasNextBeforeNext() {
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 			y.yield("someValue");
 		});
 
@@ -56,7 +57,7 @@ class YieldingIteratorTests {
 
 	@Test
 	void testFunctionWithSingleYieldMultipleHasNextCalls() {
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 			y.yield("someValue");
 		});
 
@@ -71,7 +72,7 @@ class YieldingIteratorTests {
 
 	@Test
 	void testFunctionWithSingleYieldNoHasNext() {
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 			y.yield("someValue");
 		});
 
@@ -83,7 +84,7 @@ class YieldingIteratorTests {
 
 	@Test
 	void testFunctionYieldingNullHasNextBeforeNext() {
-		Iterable<Object> yielder = Yielder.create(y -> {
+		Iterable<Object> yielder = Yielder.iterable(y -> {
 			y.yield(null);
 		});
 
@@ -96,7 +97,7 @@ class YieldingIteratorTests {
 
 	@Test
 	void testFunctionYieldingNullNoHasNext() {
-		Iterable<Object> yielder = Yielder.create(y -> {
+		Iterable<Object> yielder = Yielder.iterable(y -> {
 			y.yield(null);
 		});
 
@@ -111,7 +112,7 @@ class YieldingIteratorTests {
 		var holder = new Object() {
 			Yielder<String> y;
 		};
-		Iterable<String> yielder = Yielder.create(y -> {
+		Iterable<String> yielder = Yielder.iterable(y -> {
 			holder.y = y;
 			y.yield("a");
 		});
@@ -121,25 +122,25 @@ class YieldingIteratorTests {
 		assertFalse(it.hasNext());
 	}
 
-//	//requires module jdk.incubator.concurrent (in Java 20)
-//	@Test
-//	void testYieldFromStructuredConcurrency() {
-//		Iterable<Class<?>> yielder = Yielder.create(y -> {
-//			try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-//				Future<Object> f = scope.fork(() -> {
-//					y.yield(getClass());// should fail with IllegalStateException
-//					return fail("should have thrown exception");
-//				});
-//				f.get();
-//			} catch (InterruptedException e) {
-//				Thread.currentThread().interrupt();
-//				fail("interrupted");
-//			} catch (ExecutionException e) {
-//				y.yield(e.getCause().getClass());
-//			}
-//		});
-//		assertEquals(IllegalStateException.class, yielder.iterator().next());
-//	}
+	//	//requires module jdk.incubator.concurrent (in Java 20)
+	//	@Test
+	//	void testYieldFromStructuredConcurrency() {
+	//		Iterable<Class<?>> yielder = Yielder.create(y -> {
+	//			try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+	//				Future<Object> f = scope.fork(() -> {
+	//					y.yield(getClass());// should fail with IllegalStateException
+	//					return fail("should have thrown exception");
+	//				});
+	//				f.get();
+	//			} catch (InterruptedException e) {
+	//				Thread.currentThread().interrupt();
+	//				fail("interrupted");
+	//			} catch (ExecutionException e) {
+	//				y.yield(e.getCause().getClass());
+	//			}
+	//		});
+	//		assertEquals(IllegalStateException.class, yielder.iterator().next());
+	//	}
 
 	@Test
 	void testYieldFromPlatformThread() {
@@ -152,7 +153,7 @@ class YieldingIteratorTests {
 	}
 
 	private void testYieldFromThread(Thread.Builder threadBuilder) {
-		Iterable<Class<?>> yielder = Yielder.create(y -> {
+		Iterable<Class<?>> yielder = Yielder.iterable(y -> {
 			var holder = new Object() {
 				Exception e;
 			};
@@ -175,10 +176,19 @@ class YieldingIteratorTests {
 
 	@Test
 	void testWithException() {
-		Iterable<Object> it = Yielder.create(y -> {
+		Iterable<Object> it = Yielder.iterable(y -> {
 			throw new IntendedException();
 		});
 		assertThrows(IntendedException.class, it.iterator()::next);
+	}
+	
+	@Test
+	void testWithStream() {
+		List<Integer> list = Yielder.<Integer>stream(y -> {
+			y.yield(1);
+			y.yield(2);
+		}).toList();
+		assertEquals(List.of(1, 2), list);
 	}
 
 	private static class IntendedException extends RuntimeException {
