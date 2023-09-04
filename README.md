@@ -50,6 +50,11 @@ Text: nested: it can
 Text: nested: also be
 Text: nested: nested
 Text: bye - Thread[#1,main,5,main]
+
+Now using streams:
+Hello - Thread[#1,main,5,main]
+between yields
+World - Thread[#1,main,5,main]
 ```
 
 It can be seen that the main thread switches between the enhanced for loop and the method with the `yield return` code.
