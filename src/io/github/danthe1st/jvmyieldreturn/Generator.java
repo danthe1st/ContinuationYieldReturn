@@ -20,21 +20,21 @@ import jdk.internal.vm.ContinuationScope;
  * <p>
  * <b>The method {@link Generator#yield(Object)} might return in a different thread or might not return at all. {@code try}-{@code finally} or closing of try-with-resources-blocks might not be executed if a {@link Generator#yield(Object)} call happens inside these blocks.</b>
  * {@snippet
- * 	class="io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest"
+ * 	class="io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples"
  * 	region="example"
  * 	lang="java"
  * }
  * <p>
  * In general, the {@link Generator} object passed to the function should not be passed to other methods that might call {@link Generator#yield(Object)} inside a {@code try}-{@code finally} or closing of try-with-resources-block.
  * {@snippet
- * 	class="io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest"
+ * 	class="io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples"
  * 	region="badCodeTryFinally"
  * 	lang="java"
  * }
  * <p>
  * In case a {@code try}-{@code finally} or closing of try-with-resources-block is needed, it can surround the complete iteration code ensuring that the resource is closed when the iteration completes.
  * {@snippet
- * 	class="io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest"
+ * 	class="io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples"
  * 	region="goodCodeTryFinally"
  * 	lang="java"
  * }
