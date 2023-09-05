@@ -23,9 +23,9 @@ jobs:
     - name: prepare build
       run: mkdir build
     - name: build
-      run: javac ${{ matrix.javac_args }} --add-exports java.base/jdk.internal.vm=YieldReturn -d build/main src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/test/*.java
+      run: javac ${{ matrix.javac_args }} --add-exports java.base/jdk.internal.vm=YieldReturn -d build/main src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/example/*.java
     - name: run
-      run: java ${{ matrix.java_args }} --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build/main -m YieldReturn/io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest
+      run: java ${{ matrix.java_args }} --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build/main -m YieldReturn/io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples
     - name: download test dependencies
       run: |
         mvn -f .github/workflow-utils/test-dependencies.pom dependency:copy-dependencies -Dscope=test -DoutputDirectory=test-dependencies
@@ -60,4 +60,4 @@ jobs:
     - name: Deploy Javadoc to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v2
-    
+
