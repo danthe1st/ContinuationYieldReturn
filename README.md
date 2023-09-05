@@ -1,39 +1,39 @@
 # Continuation-based `yield return`
 
-This project contains a `yield return` feature for Java applications using Project Loom's internal `Continuation` class.
+This project contains a generator feature for Java applications using Project Loom's internal `Continuation` class.
 
 A Javadoc is available [on GitHub Pages](https://danthe1st.github.io/ContinuationYieldReturn/)
 
 ## Demo
 
-For a demo, see [`io.github.danthe1st.jvmyieldreturn.test.YieldReturnTest`](./src/io/github/danthe1st/jvmyieldreturn/test/YieldReturnTest.java):
+For a demo, see [`io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples`](./src/io/github/danthe1st/jvmyieldreturn/example/GeneratorExamples.java):
 ```java
-public static void main(String[] args) {
+private void example() {
 	System.out.println("main thread: " + Thread.currentThread());
-	
-	for (String s : Yielder.iterable(YieldReturnTest::someMethod)) {
+
+	for(String s : Generator.iterable(this::someMethod)){
 		System.out.println("Text: " + s);
 	}
 
 	System.out.println();
 	System.out.println("Now using streams:");
-	
-	Yielder.stream(YieldReturnTest::someMethod).limit(2).forEach(System.out::println);
+
+	Generator.stream(this::someMethod).limit(2).forEach(System.out::println);
 }
 
-private static void someMethod(Yielder<String> y) {
+private void someMethod(Generator<String> y) {
 	y.yield("Hello - " + Thread.currentThread());
 	System.out.println("between yields");
 	y.yield("World - " + Thread.currentThread());
 
-	for (String s : Yielder.iterable(YieldReturnTest::otherMethod)) {
+	for(String s : Generator.iterable(this::otherMethod)){
 		y.yield("nested: " + s);
 	}
 
 	y.yield("bye - " + Thread.currentThread());
 }
 
-private static void otherMethod(Yielder<String> y) {
+private void otherMethod(Generator<String> y) {
 	y.yield("it can");
 	y.yield("also be");
 	y.yield("nested");
@@ -94,16 +94,16 @@ The argument `--enable-preview` is necessary since `Continuation`s are only avai
 
 In Eclipse, the export can be added from the `Libraries` tab of the Build path (Right click on the project > `Build Path` > `Configure Build Path` > `Libraries`).
 After expanding the `JRE System Library` (this should point to a Java 20 JDK), there should be a `Is modular` option.
-This option needs to be edited via double-clicking or the `Edit`-button on the right.  
+This option needs to be edited via double-clicking or the `Edit`-button on the right.
 ![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/042bdd53-2a5c-42a1-8f1a-41659c3ac9c8)
 
-In the `Details` tab, a new export needs to be added via the `Add` button on the right.  
+In the `Details` tab, a new export needs to be added via the `Add` button on the right.
 ![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/bb7f997c-3dcd-4f2e-8742-7155530bbe4f)
 
-Enter `java.base` for the `Source Module` and `jdk.internal.vm` for the `Package` entry.  
+Enter `java.base` for the `Source Module` and `jdk.internal.vm` for the `Package` entry.
 ![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/6893b91d-d9db-40f7-bfed-495c74dcfaa4)
 
-`--enable-preview` can be added to the VM arguments of the run configuration.  
+`--enable-preview` can be added to the VM arguments of the run configuration.
 ![image](https://github.com/danthe1st/ContinuationYieldReturn/assets/34687786/1ac7bb62-6fd4-487d-9c4d-b55a09580d13)
 
 ### CLI

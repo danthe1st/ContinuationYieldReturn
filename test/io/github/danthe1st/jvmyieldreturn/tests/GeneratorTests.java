@@ -13,13 +13,13 @@ import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.danthe1st.jvmyieldreturn.Yielder;
+import io.github.danthe1st.jvmyieldreturn.Generator;
 
-class YieldingIteratorTests {
+class GeneratorTests {
 	
 	@Test
 	void testEmptyFunctionHasNextBeforeNext() {
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 		});
 		Iterator<String> it = yielder.iterator();
 		assertFalse(it.hasNext());
@@ -28,7 +28,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testEmptyFunctionMultipleHasNextCalls() {
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 		});
 		Iterator<String> it = yielder.iterator();
 		assertFalse(it.hasNext());
@@ -37,14 +37,14 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testEmptyFunctionNoHasNext() {
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 		});
 		assertThrows(NoSuchElementException.class, yielder.iterator()::next);
 	}
 	
 	@Test
 	void testFunctionWithSingleYieldHasNextBeforeNext() {
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 			y.yield("someValue");
 		});
 		
@@ -57,7 +57,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testFunctionWithSingleYieldMultipleHasNextCalls() {
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 			y.yield("someValue");
 		});
 		
@@ -72,7 +72,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testFunctionWithSingleYieldNoHasNext() {
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 			y.yield("someValue");
 		});
 		
@@ -84,7 +84,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testFunctionYieldingNullHasNextBeforeNext() {
-		Iterable<Object> yielder = Yielder.iterable(y -> {
+		Iterable<Object> yielder = Generator.iterable(y -> {
 			y.yield(null);
 		});
 		
@@ -97,7 +97,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testFunctionYieldingNullNoHasNext() {
-		Iterable<Object> yielder = Yielder.iterable(y -> {
+		Iterable<Object> yielder = Generator.iterable(y -> {
 			y.yield(null);
 		});
 		
@@ -110,9 +110,9 @@ class YieldingIteratorTests {
 	@Test
 	void testYieldFromOutsideFunction() {
 		var holder = new Object() {
-			Yielder<String> y;
+			Generator<String> y;
 		};
-		Iterable<String> yielder = Yielder.iterable(y -> {
+		Iterable<String> yielder = Generator.iterable(y -> {
 			holder.y = y;
 			y.yield("a");
 		});
@@ -125,7 +125,7 @@ class YieldingIteratorTests {
 	// //requires module jdk.incubator.concurrent
 	//	@Test
 	//	void testYieldFromStructuredConcurrency() {
-	// Iterable<Class<?>> yielder = Yielder.iterable(y -> {
+	// Iterable<Class<?>> yielder = Generator.iterable(y -> {
 	//			try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 	//				Future<Object> f = scope.fork(() -> {
 	//					y.yield(getClass());// should fail with IllegalStateException
@@ -153,7 +153,7 @@ class YieldingIteratorTests {
 	}
 	
 	private void testYieldFromThread(Thread.Builder threadBuilder) {
-		Iterable<Class<?>> yielder = Yielder.iterable(y -> {
+		Iterable<Class<?>> yielder = Generator.iterable(y -> {
 			var holder = new Object() {
 				Exception e;
 			};
@@ -176,7 +176,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testWithException() {
-		Iterable<Object> it = Yielder.iterable(y -> {
+		Iterable<Object> it = Generator.iterable(y -> {
 			throw new IntendedException();
 		});
 		assertThrows(IntendedException.class, it.iterator()::next);
@@ -184,7 +184,7 @@ class YieldingIteratorTests {
 	
 	@Test
 	void testWithStream() {
-		List<Integer> list = Yielder.<Integer>stream(y -> {
+		List<Integer> list = Generator.<Integer>stream(y -> {
 			y.yield(1);
 			y.yield(2);
 		}).toList();
