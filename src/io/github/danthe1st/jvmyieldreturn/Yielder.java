@@ -36,6 +36,8 @@ public class Yielder<T> {
 	
 	/**
 	 * Passes an object to the corresponding {@link Iterator} and suspends until the next object is requested.
+	 *
+	 * <b>This method might return in a different thread or might not return at all. {@code try}-{@code finally} or closing of try-with-resources-blocks might not be executed if a {@link Yielder#yield(Object)} call happens inside these blocks.</b>
 	 * @param value The object that should be passed to the {@link Iterator}.
 	 */
 	public void yield(T value) {
@@ -45,9 +47,12 @@ public class Yielder<T> {
 	
 	/**
 	 * Creates an {@link Iterable} obtaining its values by lazily evaluating a function.
+	 *
+	 * <b>When calling {@link Yielder#yield(Object)} in the passed function, that call  might return in a different thread or might not return at all. {@code try}-{@code finally} or closing of try-with-resources-blocks might not be executed if a {@link Yielder#yield(Object)} call happens inside these blocks.</b>
 	 * @param <T> The type of elements to iterate over.
 	 * @param fun The function used for obtaining values to iterate over. Values are passed to the {@link Iterator} using a parameter passed to the function.
 	 * @return An {@link Iterable} that allows iterating over the values provided by the given function.
+	 * @see Yielder#yield(Object)
 	 */
 	public static <T> Iterable<T> iterable(Consumer<Yielder<T>> fun) {
 		return () -> {
@@ -63,9 +68,12 @@ public class Yielder<T> {
 	
 	/**
 	 * Creates a {@link Stream} obtaining its values by lazily evaluating a function.
+	 *
+	 * <b>When calling {@link Yielder#yield(Object)} in the passed function, that call  might return in a different thread or might not return at all. {@code try}-{@code finally} or closing of try-with-resources-blocks might not be executed if a {@link Yielder#yield(Object)} call happens inside these blocks.</b>
 	 * @param <T> The type of the elements to iterate over.
 	 * @param fun The function used for obtaining values to iterate over. Values are passed to the {@link Stream} using a parameter passed to the function.
 	 * @return A {@link Stream} that allows lazily accessing the values provided by the given function.
+	 * @see Yielder#yield(Object)
 	 */
 	public static <T> Stream<T> stream(Consumer<Yielder<T>> fun){
 		return StreamSupport.stream(iterable(fun).spliterator(), false);

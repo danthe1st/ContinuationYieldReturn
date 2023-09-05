@@ -125,7 +125,7 @@ class YieldingIteratorTests {
 	// //requires module jdk.incubator.concurrent
 	//	@Test
 	//	void testYieldFromStructuredConcurrency() {
-	//		Iterable<Class<?>> yielder = Yielder.create(y -> {
+	// Iterable<Class<?>> yielder = Yielder.iterable(y -> {
 	//			try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 	//				Future<Object> f = scope.fork(() -> {
 	//					y.yield(getClass());// should fail with IllegalStateException
@@ -181,7 +181,7 @@ class YieldingIteratorTests {
 		});
 		assertThrows(IntendedException.class, it.iterator()::next);
 	}
-
+	
 	@Test
 	void testWithStream() {
 		List<Integer> list = Yielder.<Integer>stream(y -> {
