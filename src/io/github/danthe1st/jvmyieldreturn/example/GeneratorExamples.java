@@ -71,7 +71,7 @@ class GeneratorExamples {
 	// @start region = "goodCodeTryFinally"
 	private void goodCodeTryFinally() {
 		try{
-			Iterable<String> iterable = Generator.iterable(this::methodWithTryFinally);
+			Iterable<String> iterable = Generator.iterable(this::yieldSomething);
 			String firstElement = iterable.iterator().next();
 			System.out.println(firstElement);
 		}finally{// will get executed

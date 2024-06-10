@@ -3,37 +3,28 @@ on:
   - push
 jobs:
   build:
-    strategy:
-      matrix:
-        include:
-        - version: '20'
-          javac_args: '--enable-preview --source 20'
-          java_args: '--enable-preview'
-        - version: '21-ea'
-          javac_args: ''
-          java_args: ''
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK ${{ matrix.version }}
+    - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: ${{ matrix.version }}
+        java-version: 21
         distribution: 'temurin'
     - name: prepare build
       run: mkdir build
     - name: build
-      run: javac ${{ matrix.javac_args }} --add-exports java.base/jdk.internal.vm=YieldReturn -d build/main src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/example/*.java
+      run: javac --add-exports java.base/jdk.internal.vm=YieldReturn -d build/main src/module-info.java src/io/github/danthe1st/jvmyieldreturn/*.java src/io/github/danthe1st/jvmyieldreturn/example/*.java
     - name: run
-      run: java ${{ matrix.java_args }} --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build/main -m YieldReturn/io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples
+      run: java --add-exports java.base/jdk.internal.vm=YieldReturn --module-path build/main -m YieldReturn/io.github.danthe1st.jvmyieldreturn.example.GeneratorExamples
     - name: download test dependencies
       run: |
         mvn -f .github/workflow-utils/test-dependencies.pom dependency:copy-dependencies -Dscope=test -DoutputDirectory=test-dependencies
         curl https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar -o .github/workflow-utils/test-dependencies/launcher.jar
     - name: compile tests
-      run: javac ${{ matrix.javac_args }} --module-path build/main:.github/workflow-utils/test-dependencies -d build/test test/module-info.java test/io/github/danthe1st/jvmyieldreturn/tests/*.java
+      run: javac --module-path build/main:.github/workflow-utils/test-dependencies -d build/test test/module-info.java test/io/github/danthe1st/jvmyieldreturn/tests/*.java
     - name: run tests
-      run: java ${{ matrix.java_args }} --add-exports java.base/jdk.internal.vm=ALL-UNNAMED -jar .github/workflow-utils/test-dependencies/launcher.jar --disable-ansi-colors --class-path build/main:build/test --select-package io.github.danthe1st.jvmyieldreturn.tests
+      run: java --add-exports java.base/jdk.internal.vm=ALL-UNNAMED -jar .github/workflow-utils/test-dependencies/launcher.jar --disable-ansi-colors --class-path build/main:build/test --select-package io.github.danthe1st.jvmyieldreturn.tests
   javadoc:
     runs-on: ubuntu-latest
     needs: [build]
@@ -49,7 +40,7 @@ jobs:
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: '21-ea'
+        java-version: '21'
         distribution: 'temurin'
     - name: generate Javadoc
       run: javadoc -sourcepath src --snippet-path src --add-exports java.base/jdk.internal.vm=YieldReturn -d docs io.github.danthe1st.jvmyieldreturn
